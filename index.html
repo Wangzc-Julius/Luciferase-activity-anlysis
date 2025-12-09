@@ -1,0 +1,1409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARS-CoV-2 Replicon Inhibition by Mini-Proteins</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+        
+        .header .authors {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #3f51b5;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .search-section {
+            margin: 40px 0;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #3f51b5;
+        }
+        
+        .search-box button {
+            padding: 15px 30px;
+            background: #3f51b5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: #303f9f;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #3f51b5;
+            color: white;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .plots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .plot-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .plot-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .plot-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            border-bottom: 1px solid #eee;
+            padding: 15px;
+            background: white;
+        }
+        
+        .plot-info {
+            padding: 20px;
+        }
+        
+        .plot-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+        
+        .plot-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        
+        .download-section {
+            margin: 50px 0;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 0 10px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76,175,80,0.3);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            margin: 50px auto;
+            display: block;
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+            animation: zoomIn 0.3s;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 1001;
+        }
+        
+        .close:hover {
+            color: #bbb;
+            transform: scale(1.1);
+        }
+        
+        .modal-info {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background: rgba(0,0,0,0.7);
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .plots-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+                max-height: 80vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>SARS-CoV-2 Replicon Inhibition by Mini-Proteins</h1>
+            <div class="subtitle">High-throughput screening of mini-proteins for SARS-CoV-2 replicon inhibition</div>
+            <div class="authors">Data analyzed: December 08, 2025</div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-vial"></i>
+                <div class="number">72</div>
+                <div class="label">Mini-Proteins Tested</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="number">4</div>
+                <div class="label">Time Points</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="number">3-4 per group</div>
+                <div class="label">Technical Replicates</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-search"></i>
+                <div class="number">72</div>
+                <div class="label">Complete Analyses</div>
+            </div>
+        </div>
+        
+        <!-- Search and Filter -->
+        <div class="search-section">
+            <h2 style="margin-bottom: 20px; color: #1a237e;">Explore Results</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for specific mini-proteins...">
+                <button onclick="searchPlots()"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterPlots('all')">All Groups</button>
+                <button class="filter-btn" onclick="filterPlots('top20')">Top 20 Inhibitors</button>
+                <button class="filter-btn" onclick="filterPlots('mock')">Mock Controls</button>
+                <button class="filter-btn" onclick="filterPlots('wtn')">WT+N Controls</button>
+            </div>
+        </div>
+        
+        <!-- Plots Grid -->
+        <div id="plotsContainer" class="plots-grid">
+            
+        <div class="plot-card" data-group="1" data-category="all">
+            <img src="plots/1_nature_plot.png" alt="1 Analysis" 
+                 onclick="openModal('plots/1_nature_plot.png', '1')">
+            <div class="plot-info">
+                <div class="plot-title">1</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="10" data-category="all">
+            <img src="plots/10_nature_plot.png" alt="10 Analysis" 
+                 onclick="openModal('plots/10_nature_plot.png', '10')">
+            <div class="plot-info">
+                <div class="plot-title">10</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="11" data-category="all">
+            <img src="plots/11_nature_plot.png" alt="11 Analysis" 
+                 onclick="openModal('plots/11_nature_plot.png', '11')">
+            <div class="plot-info">
+                <div class="plot-title">11</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="12" data-category="all">
+            <img src="plots/12_nature_plot.png" alt="12 Analysis" 
+                 onclick="openModal('plots/12_nature_plot.png', '12')">
+            <div class="plot-info">
+                <div class="plot-title">12</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="13" data-category="all">
+            <img src="plots/13_nature_plot.png" alt="13 Analysis" 
+                 onclick="openModal('plots/13_nature_plot.png', '13')">
+            <div class="plot-info">
+                <div class="plot-title">13</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="14" data-category="all">
+            <img src="plots/14_nature_plot.png" alt="14 Analysis" 
+                 onclick="openModal('plots/14_nature_plot.png', '14')">
+            <div class="plot-info">
+                <div class="plot-title">14</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="15" data-category="all">
+            <img src="plots/15_nature_plot.png" alt="15 Analysis" 
+                 onclick="openModal('plots/15_nature_plot.png', '15')">
+            <div class="plot-info">
+                <div class="plot-title">15</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="16" data-category="all">
+            <img src="plots/16_nature_plot.png" alt="16 Analysis" 
+                 onclick="openModal('plots/16_nature_plot.png', '16')">
+            <div class="plot-info">
+                <div class="plot-title">16</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="17" data-category="all">
+            <img src="plots/17_nature_plot.png" alt="17 Analysis" 
+                 onclick="openModal('plots/17_nature_plot.png', '17')">
+            <div class="plot-info">
+                <div class="plot-title">17</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="18" data-category="all">
+            <img src="plots/18_nature_plot.png" alt="18 Analysis" 
+                 onclick="openModal('plots/18_nature_plot.png', '18')">
+            <div class="plot-info">
+                <div class="plot-title">18</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="19" data-category="all">
+            <img src="plots/19_nature_plot.png" alt="19 Analysis" 
+                 onclick="openModal('plots/19_nature_plot.png', '19')">
+            <div class="plot-info">
+                <div class="plot-title">19</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="2" data-category="all">
+            <img src="plots/2_nature_plot.png" alt="2 Analysis" 
+                 onclick="openModal('plots/2_nature_plot.png', '2')">
+            <div class="plot-info">
+                <div class="plot-title">2</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="20" data-category="all">
+            <img src="plots/20_nature_plot.png" alt="20 Analysis" 
+                 onclick="openModal('plots/20_nature_plot.png', '20')">
+            <div class="plot-info">
+                <div class="plot-title">20</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="21" data-category="all">
+            <img src="plots/21_nature_plot.png" alt="21 Analysis" 
+                 onclick="openModal('plots/21_nature_plot.png', '21')">
+            <div class="plot-info">
+                <div class="plot-title">21</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="22" data-category="all">
+            <img src="plots/22_nature_plot.png" alt="22 Analysis" 
+                 onclick="openModal('plots/22_nature_plot.png', '22')">
+            <div class="plot-info">
+                <div class="plot-title">22</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="23" data-category="all">
+            <img src="plots/23_nature_plot.png" alt="23 Analysis" 
+                 onclick="openModal('plots/23_nature_plot.png', '23')">
+            <div class="plot-info">
+                <div class="plot-title">23</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="24" data-category="all">
+            <img src="plots/24_nature_plot.png" alt="24 Analysis" 
+                 onclick="openModal('plots/24_nature_plot.png', '24')">
+            <div class="plot-info">
+                <div class="plot-title">24</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="25" data-category="all">
+            <img src="plots/25_nature_plot.png" alt="25 Analysis" 
+                 onclick="openModal('plots/25_nature_plot.png', '25')">
+            <div class="plot-info">
+                <div class="plot-title">25</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="26" data-category="all">
+            <img src="plots/26_nature_plot.png" alt="26 Analysis" 
+                 onclick="openModal('plots/26_nature_plot.png', '26')">
+            <div class="plot-info">
+                <div class="plot-title">26</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="27" data-category="all">
+            <img src="plots/27_nature_plot.png" alt="27 Analysis" 
+                 onclick="openModal('plots/27_nature_plot.png', '27')">
+            <div class="plot-info">
+                <div class="plot-title">27</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="28" data-category="all">
+            <img src="plots/28_nature_plot.png" alt="28 Analysis" 
+                 onclick="openModal('plots/28_nature_plot.png', '28')">
+            <div class="plot-info">
+                <div class="plot-title">28</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="29" data-category="all">
+            <img src="plots/29_nature_plot.png" alt="29 Analysis" 
+                 onclick="openModal('plots/29_nature_plot.png', '29')">
+            <div class="plot-info">
+                <div class="plot-title">29</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="3" data-category="all">
+            <img src="plots/3_nature_plot.png" alt="3 Analysis" 
+                 onclick="openModal('plots/3_nature_plot.png', '3')">
+            <div class="plot-info">
+                <div class="plot-title">3</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="30" data-category="all">
+            <img src="plots/30_nature_plot.png" alt="30 Analysis" 
+                 onclick="openModal('plots/30_nature_plot.png', '30')">
+            <div class="plot-info">
+                <div class="plot-title">30</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="31" data-category="all">
+            <img src="plots/31_nature_plot.png" alt="31 Analysis" 
+                 onclick="openModal('plots/31_nature_plot.png', '31')">
+            <div class="plot-info">
+                <div class="plot-title">31</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="32" data-category="all">
+            <img src="plots/32_nature_plot.png" alt="32 Analysis" 
+                 onclick="openModal('plots/32_nature_plot.png', '32')">
+            <div class="plot-info">
+                <div class="plot-title">32</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="33" data-category="all">
+            <img src="plots/33_nature_plot.png" alt="33 Analysis" 
+                 onclick="openModal('plots/33_nature_plot.png', '33')">
+            <div class="plot-info">
+                <div class="plot-title">33</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="34" data-category="all">
+            <img src="plots/34_nature_plot.png" alt="34 Analysis" 
+                 onclick="openModal('plots/34_nature_plot.png', '34')">
+            <div class="plot-info">
+                <div class="plot-title">34</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="35" data-category="all">
+            <img src="plots/35_nature_plot.png" alt="35 Analysis" 
+                 onclick="openModal('plots/35_nature_plot.png', '35')">
+            <div class="plot-info">
+                <div class="plot-title">35</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="36" data-category="all">
+            <img src="plots/36_nature_plot.png" alt="36 Analysis" 
+                 onclick="openModal('plots/36_nature_plot.png', '36')">
+            <div class="plot-info">
+                <div class="plot-title">36</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="37" data-category="all">
+            <img src="plots/37_nature_plot.png" alt="37 Analysis" 
+                 onclick="openModal('plots/37_nature_plot.png', '37')">
+            <div class="plot-info">
+                <div class="plot-title">37</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="38" data-category="all">
+            <img src="plots/38_nature_plot.png" alt="38 Analysis" 
+                 onclick="openModal('plots/38_nature_plot.png', '38')">
+            <div class="plot-info">
+                <div class="plot-title">38</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="39" data-category="all">
+            <img src="plots/39_nature_plot.png" alt="39 Analysis" 
+                 onclick="openModal('plots/39_nature_plot.png', '39')">
+            <div class="plot-info">
+                <div class="plot-title">39</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="4" data-category="all">
+            <img src="plots/4_nature_plot.png" alt="4 Analysis" 
+                 onclick="openModal('plots/4_nature_plot.png', '4')">
+            <div class="plot-info">
+                <div class="plot-title">4</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="40" data-category="all">
+            <img src="plots/40_nature_plot.png" alt="40 Analysis" 
+                 onclick="openModal('plots/40_nature_plot.png', '40')">
+            <div class="plot-info">
+                <div class="plot-title">40</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="41" data-category="all">
+            <img src="plots/41_nature_plot.png" alt="41 Analysis" 
+                 onclick="openModal('plots/41_nature_plot.png', '41')">
+            <div class="plot-info">
+                <div class="plot-title">41</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="42" data-category="all">
+            <img src="plots/42_nature_plot.png" alt="42 Analysis" 
+                 onclick="openModal('plots/42_nature_plot.png', '42')">
+            <div class="plot-info">
+                <div class="plot-title">42</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="43" data-category="all">
+            <img src="plots/43_nature_plot.png" alt="43 Analysis" 
+                 onclick="openModal('plots/43_nature_plot.png', '43')">
+            <div class="plot-info">
+                <div class="plot-title">43</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="44" data-category="all">
+            <img src="plots/44_nature_plot.png" alt="44 Analysis" 
+                 onclick="openModal('plots/44_nature_plot.png', '44')">
+            <div class="plot-info">
+                <div class="plot-title">44</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="45" data-category="all">
+            <img src="plots/45_nature_plot.png" alt="45 Analysis" 
+                 onclick="openModal('plots/45_nature_plot.png', '45')">
+            <div class="plot-info">
+                <div class="plot-title">45</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="46" data-category="all">
+            <img src="plots/46_nature_plot.png" alt="46 Analysis" 
+                 onclick="openModal('plots/46_nature_plot.png', '46')">
+            <div class="plot-info">
+                <div class="plot-title">46</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="47" data-category="all">
+            <img src="plots/47_nature_plot.png" alt="47 Analysis" 
+                 onclick="openModal('plots/47_nature_plot.png', '47')">
+            <div class="plot-info">
+                <div class="plot-title">47</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="48" data-category="all">
+            <img src="plots/48_nature_plot.png" alt="48 Analysis" 
+                 onclick="openModal('plots/48_nature_plot.png', '48')">
+            <div class="plot-info">
+                <div class="plot-title">48</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="49" data-category="all">
+            <img src="plots/49_nature_plot.png" alt="49 Analysis" 
+                 onclick="openModal('plots/49_nature_plot.png', '49')">
+            <div class="plot-info">
+                <div class="plot-title">49</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="5" data-category="all">
+            <img src="plots/5_nature_plot.png" alt="5 Analysis" 
+                 onclick="openModal('plots/5_nature_plot.png', '5')">
+            <div class="plot-info">
+                <div class="plot-title">5</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="50" data-category="all">
+            <img src="plots/50_nature_plot.png" alt="50 Analysis" 
+                 onclick="openModal('plots/50_nature_plot.png', '50')">
+            <div class="plot-info">
+                <div class="plot-title">50</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="51" data-category="all">
+            <img src="plots/51_nature_plot.png" alt="51 Analysis" 
+                 onclick="openModal('plots/51_nature_plot.png', '51')">
+            <div class="plot-info">
+                <div class="plot-title">51</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="52" data-category="all">
+            <img src="plots/52_nature_plot.png" alt="52 Analysis" 
+                 onclick="openModal('plots/52_nature_plot.png', '52')">
+            <div class="plot-info">
+                <div class="plot-title">52</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="53" data-category="all">
+            <img src="plots/53_nature_plot.png" alt="53 Analysis" 
+                 onclick="openModal('plots/53_nature_plot.png', '53')">
+            <div class="plot-info">
+                <div class="plot-title">53</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="54" data-category="all">
+            <img src="plots/54_nature_plot.png" alt="54 Analysis" 
+                 onclick="openModal('plots/54_nature_plot.png', '54')">
+            <div class="plot-info">
+                <div class="plot-title">54</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="55" data-category="all">
+            <img src="plots/55_nature_plot.png" alt="55 Analysis" 
+                 onclick="openModal('plots/55_nature_plot.png', '55')">
+            <div class="plot-info">
+                <div class="plot-title">55</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="56" data-category="all">
+            <img src="plots/56_nature_plot.png" alt="56 Analysis" 
+                 onclick="openModal('plots/56_nature_plot.png', '56')">
+            <div class="plot-info">
+                <div class="plot-title">56</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="57" data-category="all">
+            <img src="plots/57_nature_plot.png" alt="57 Analysis" 
+                 onclick="openModal('plots/57_nature_plot.png', '57')">
+            <div class="plot-info">
+                <div class="plot-title">57</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="58" data-category="all">
+            <img src="plots/58_nature_plot.png" alt="58 Analysis" 
+                 onclick="openModal('plots/58_nature_plot.png', '58')">
+            <div class="plot-info">
+                <div class="plot-title">58</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="59" data-category="all">
+            <img src="plots/59_nature_plot.png" alt="59 Analysis" 
+                 onclick="openModal('plots/59_nature_plot.png', '59')">
+            <div class="plot-info">
+                <div class="plot-title">59</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="6" data-category="all">
+            <img src="plots/6_nature_plot.png" alt="6 Analysis" 
+                 onclick="openModal('plots/6_nature_plot.png', '6')">
+            <div class="plot-info">
+                <div class="plot-title">6</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="60" data-category="all">
+            <img src="plots/60_nature_plot.png" alt="60 Analysis" 
+                 onclick="openModal('plots/60_nature_plot.png', '60')">
+            <div class="plot-info">
+                <div class="plot-title">60</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="61" data-category="all">
+            <img src="plots/61_nature_plot.png" alt="61 Analysis" 
+                 onclick="openModal('plots/61_nature_plot.png', '61')">
+            <div class="plot-info">
+                <div class="plot-title">61</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="62" data-category="all">
+            <img src="plots/62_nature_plot.png" alt="62 Analysis" 
+                 onclick="openModal('plots/62_nature_plot.png', '62')">
+            <div class="plot-info">
+                <div class="plot-title">62</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="63" data-category="all">
+            <img src="plots/63_nature_plot.png" alt="63 Analysis" 
+                 onclick="openModal('plots/63_nature_plot.png', '63')">
+            <div class="plot-info">
+                <div class="plot-title">63</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="64" data-category="all">
+            <img src="plots/64_nature_plot.png" alt="64 Analysis" 
+                 onclick="openModal('plots/64_nature_plot.png', '64')">
+            <div class="plot-info">
+                <div class="plot-title">64</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="65" data-category="all">
+            <img src="plots/65_nature_plot.png" alt="65 Analysis" 
+                 onclick="openModal('plots/65_nature_plot.png', '65')">
+            <div class="plot-info">
+                <div class="plot-title">65</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="66" data-category="all">
+            <img src="plots/66_nature_plot.png" alt="66 Analysis" 
+                 onclick="openModal('plots/66_nature_plot.png', '66')">
+            <div class="plot-info">
+                <div class="plot-title">66</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="67" data-category="all">
+            <img src="plots/67_nature_plot.png" alt="67 Analysis" 
+                 onclick="openModal('plots/67_nature_plot.png', '67')">
+            <div class="plot-info">
+                <div class="plot-title">67</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="7" data-category="all">
+            <img src="plots/7_nature_plot.png" alt="7 Analysis" 
+                 onclick="openModal('plots/7_nature_plot.png', '7')">
+            <div class="plot-info">
+                <div class="plot-title">7</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="8" data-category="all">
+            <img src="plots/8_nature_plot.png" alt="8 Analysis" 
+                 onclick="openModal('plots/8_nature_plot.png', '8')">
+            <div class="plot-info">
+                <div class="plot-title">8</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="9" data-category="all">
+            <img src="plots/9_nature_plot.png" alt="9 Analysis" 
+                 onclick="openModal('plots/9_nature_plot.png', '9')">
+            <div class="plot-info">
+                <div class="plot-title">9</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="mock" data-category="all">
+            <img src="plots/Mock_nature_plot.png" alt="Mock Analysis" 
+                 onclick="openModal('plots/Mock_nature_plot.png', 'Mock')">
+            <div class="plot-info">
+                <div class="plot-title">Mock</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="pc" data-category="all">
+            <img src="plots/PC_nature_plot.png" alt="PC Analysis" 
+                 onclick="openModal('plots/PC_nature_plot.png', 'PC')">
+            <div class="plot-info">
+                <div class="plot-title">PC</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="remdesivir 1000 nm" data-category="all">
+            <img src="plots/Remdesivir 1000 nM_nature_plot.png" alt="Remdesivir 1000 nM Analysis" 
+                 onclick="openModal('plots/Remdesivir 1000 nM_nature_plot.png', 'Remdesivir 1000 nM')">
+            <div class="plot-info">
+                <div class="plot-title">Remdesivir 1000 nM</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="remdesivir 1000 nm " data-category="all">
+            <img src="plots/Remdesivir 1000 nM _nature_plot.png" alt="Remdesivir 1000 nM  Analysis" 
+                 onclick="openModal('plots/Remdesivir 1000 nM _nature_plot.png', 'Remdesivir 1000 nM ')">
+            <div class="plot-info">
+                <div class="plot-title">Remdesivir 1000 nM </div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-card" data-group="wt+n" data-category="all">
+            <img src="plots/WT_N_nature_plot.png" alt="WT+N Analysis" 
+                 onclick="openModal('plots/WT_N_nature_plot.png', 'WT+N')">
+            <div class="plot-info">
+                <div class="plot-title">WT+N</div>
+                <p style="color: #666; font-size: 0.95rem;">SARS-CoV-2 replicon inhibition analysis</p>
+                <div class="plot-meta">
+                    <span><i class="fas fa-chart-bar"></i> Time course + 24h comparison</span>
+                    <span><i class="fas fa-download"></i> Click to view</span>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+        
+        <!-- Download Section -->
+        <div class="download-section">
+            <h2 style="margin-bottom: 30px; color: #1a237e;">Download Complete Dataset</h2>
+            <a href="data/analysis_results.zip" class="download-btn" download>
+                <i class="fas fa-download"></i> Download All Data (ZIP)
+            </a>
+            <a href="data/figure_captions.pdf" class="download-btn" download>
+                <i class="fas fa-file-pdf"></i> Download Figure Captions (PDF)
+            </a>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2025 SARS-CoV-2 Replicon Screening Project</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7;">
+                This interactive report can be shared by distributing the entire folder. No server required.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Modal for image viewing -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-info" id="modalInfo"></div>
+    </div>
+    
+    <script>
+        // Search function
+        function searchPlots() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const plotCards = document.querySelectorAll('.plot-card');
+            
+            plotCards.forEach(card => {
+                const groupName = card.dataset.group;
+                if (groupName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Filter function
+        function filterPlots(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const plotCards = document.querySelectorAll('.plot-card');
+            
+            plotCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Modal functions
+        function openModal(imageSrc, groupName) {
+            document.getElementById('modalImage').src = imageSrc;
+            document.getElementById('modalInfo').textContent = groupName;
+            document.getElementById('imageModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
